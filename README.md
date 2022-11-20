@@ -41,9 +41,16 @@ Cette application de TodoList sera composée de 2 activités : ////////
 #### 1 - Lier Firebase et l'application
 
 En utilisant le menu Tools > Firebase :
- 1 - Activer la liaision avec un projet existant* dont les règles de sécurités sont en mode test ou à
+- 1/ Activer la liaision avec un projet existant* dont les règles de sécurités sont en mode test ou à
 true \* Le cas échéant créer un projet puis le raccorder 
- 2 - Ajouter les librairies pour le bon fonctionnement des classes héritées
+- 2/ Ajouter les librairies pour le bon fonctionnement des classes héritées
+
+#### 2 - Ajouter les librairies connexes
+
+- Ajouter les librairies RecyclerView et CardView en utilisant l'utilitaire wysiwyg File > Project
+  Structure > Depedencies > App > + > Library depedency
+- Ouvrir le fichier Gradle module, vérifier l'ajout des librairies et trier celles-ci pour une
+  meilleure lisibilité 
 
 ```xml
     // Firestore
@@ -55,17 +62,6 @@ true \* Le cas échéant créer un projet puis le raccorder
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
 ```
-
-#### 2 - Ajouter les librairies connexes
-
-- Ajouter les librairies RecyclerView et CardView en utilisant l'utilitaire wysiwyg File > Project
-  Structure > Depedencies > App > + > Library depedency
-- Ouvrir le fichier Gradle module, vérifier l'ajout des librairies et trier celles-ci pour une
-  meilleure lisibilité // Firestore implementation 'com.google.firebase:firebase-firestore:24.4.1'
-  implementation 'com.firebaseui:firebase-ui-firestore:8.0.0' // RecyclerView implementation '
-  androidx.recyclerview:recyclerview:1.2.1' implementation 'androidx.recyclerview:
-  recyclerview-selection:1.2.0-alpha01' // CardView implementation 'androidx.cardview:cardview:
-  1.0.0'
 
 Pour connaitre le nom exact d'une
 librairie [https://developer.android.com/jetpack/androidx/migrate/artifact-mappings]
