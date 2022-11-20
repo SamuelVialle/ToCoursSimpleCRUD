@@ -41,9 +41,9 @@ Cette application de TodoList sera composée de 2 activités : ////////
 #### 1 - Lier Firebase et l'application
 
 En utilisant le menu Tools > Firebase :
-1 - Activer la liaision avec un projet existant* dont les règles de sécurités sont en mode test ou à
+ 1 - Activer la liaision avec un projet existant* dont les règles de sécurités sont en mode test ou à
 true \* Le cas échéant créer un projet puis le raccorder 
-2 - Ajouter les librairies pour le bon fonctionnement des classes héritées
+ 2 - Ajouter les librairies pour le bon fonctionnement des classes héritées
 
 ```xml
     // Firestore
