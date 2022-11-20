@@ -100,6 +100,52 @@ Cette application doit avoir accès à internet pour faire la synchronisation av
 - Laisser par défaut et la nommer TodoModel
 - Ajouter les deux champs de type String : title, content
 - Ajouter un champ de type int : priority
+````java
+  String id, title, content;
+    int priority;
+
+    public TodoModel() {
+    }
+
+    public TodoModel(String id, String title, String content, int priority) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.priority = priority;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+```
 - Dans la foulée, ajouter les constantes pour les champs de la collection dans l'interface constants
 ```xml
 // Constantes pour les champs des documents de cette collection
@@ -171,6 +217,19 @@ Pour ajouter des notes il faut cliquer sur le FAB cela ouvrira une alertDialog (
 
 Dans MainActivity ajouter une méthode pour afficher l'alertDialog, notez que cette méthode fera appel à la méthode CreateItemIntoFirestore(),
 méthode qui sera ajouter par la suite.
+
+Tester l'affichage de l'alertDialog en ajoutant une fonction pourla gestion du clic sur le FAB
+```java
+ private void createTodoClic(){
+        fabAddTodo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlertDialogToAddTodo();
+            }
+        });
+    }
+```
+N'oubliez pas son appel dans le onCreate
 
 
 

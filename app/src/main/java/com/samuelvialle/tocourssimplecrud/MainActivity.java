@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                // Ici on récupérera les données du formulaire et on les passera à la méthode qui gère la création dans Firestore
             }
         });
 
@@ -61,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                // Ajout d'un toast pour la gestion de l'UX
+                Toast.makeText(MainActivity.this, "Canceled add todo", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         builder.create(); // Création
         builder.show(); // Affichage
     }
+
+    // Méthode pour enregistrer les données dans Firebase
+
 
     /*** Gestion du clic sur le FAB **/
     private void createTodoClic(){
