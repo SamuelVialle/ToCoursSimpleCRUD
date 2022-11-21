@@ -1,18 +1,16 @@
 package com.samuelvialle.tocourssimplecrud;
 
-public class TodoModel {
+public class ModelTodo {
 
     String id, title, content;
-    int priority;
 
-    public TodoModel() {
+    public ModelTodo() {
     }
 
-    public TodoModel(String id, String title, String content, int priority) {
+    public ModelTodo(String id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.priority = priority;
     }
 
     public String getId() {
@@ -39,11 +37,4 @@ public class TodoModel {
         this.content = content;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
 }
