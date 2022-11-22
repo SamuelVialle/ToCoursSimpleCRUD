@@ -8,6 +8,7 @@ public interface Constants {
     String COLLECTION_TODO = "TodoList";
 
     // Constantes pour les champs des documents de cette collection
+    String KEY_ID = "id";
     String KEY_TITLE = "title";
     String KEY_CONTENT = "content";
     String KEY_PRIORITY = "priority";

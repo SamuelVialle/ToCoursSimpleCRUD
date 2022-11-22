@@ -1,5 +1,10 @@
 package com.samuelvialle.tocourssimplecrud;
 
+import static com.samuelvialle.tocourssimplecrud.commons.Constants.COLLECTION_TODO;
+import static com.samuelvialle.tocourssimplecrud.commons.Constants.KEY_CONTENT;
+import static com.samuelvialle.tocourssimplecrud.commons.Constants.KEY_ID;
+import static com.samuelvialle.tocourssimplecrud.commons.Constants.KEY_TITLE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -29,6 +36,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     /**** GLOBAL ****/
+    private static final String TAG = "MainActivity";
     // Ajout des Vars globales
     private RecyclerView rvTodoList;
     private FloatingActionButton fabAddTodo;
@@ -60,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         todoListCollection = db.collection("TodoList");
     }
 
-    // Méthode pour afficher l'alertDialog
+    // Méthode pour afficher l'alertDialog d'ajout de todos
     private void showAlertDialogToAddTodo(){
         LayoutInflater inflater = LayoutInflater.from(this); // Inflater pour injecter le layout de l'alertDialog
         View subView = inflater.inflate(R.layout.alert_dialog_create_todo, null); // Création de la sous vue qui contient l'alertDialog
@@ -138,19 +146,77 @@ public class MainActivity extends AppCompatActivity {
 
     /** READ **/
     private void readData(){
-        Query query = todoListCollection.orderBy("id");
-
+        Query queryAllById = db.collection(COLLECTION_TODO);
         FirestoreRecyclerOptions<ModelTodo> todos =
                 new FirestoreRecyclerOptions.Builder<ModelTodo>()
-                        .setQuery(query, ModelTodo.class)
+                        .setQuery(queryAllById, ModelTodo.class)
                         .build();
-        Log.i("TAG", "readData:");
+        Log.i(TAG, "readData: " + todos);
         // Gestion de l'adapter
         adapter = new AdapterTodo(todos);
         rvTodoList.setAdapter(adapter);
+        adapter.startListening();
     }
 
+    /** UPDATE **/
+    private void updateData(DocumentSnapshot documentSnapshot, int position) {
+        // Créer un bundle pour envoyer les infos sur la page de modification
+        Bundle bundle = new Bundle();
+        bundle.putString("uId", documentSnapshot.getString(KEY_ID));
+        bundle.putString("uTitle", documentSnapshot.getString(KEY_TITLE));
+        bundle.putString("uContent", documentSnapshot.getString(KEY_CONTENT));
 
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+    /** DELETE **/
+    private void deleteNote(DocumentSnapshot documentSnapshot, int position) {
+        db.collection(COLLECTION_TODO)
+                .document(documentSnapshot.getId())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            notifyRemoved(documentSnapshot, position);
+                            Toast.makeText(MainActivity.this, "Data deleted!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void notifyRemoved(DocumentSnapshot documentSnapshot, int position){
+
+        //        notesList.remove(position);
+//        notifyItemRemoved(position);
+//        activity.readDataFromFirestore();
+    }
+
+    // Méthode pour la validation de la suppression avec l'AlertDialog
+    private void showAlertDialogConfirmDelete(DocumentSnapshot documentSnapshot, int position) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteNote(documentSnapshot, position);
+            }
+        });
+        builder.setNegativeButton("CANCEl", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(MainActivity.this, "Delete canceled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setTitle("Delete confirmation");
+        builder.setMessage("Are you sure to delete the note ?");
+        builder.create();
+        builder.show();
+
+    }
 
     /*** Gestion du clic sur le FAB **/
     private void createTodoClic(){
@@ -171,8 +237,23 @@ public class MainActivity extends AppCompatActivity {
         // Les méthodes appelées
         initUI();
         initFirebase();
-        createTodoClic();
         readData();
+        createTodoClic();
+
+        adapter.setOnItemClickListener(new AdapterTodo.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position, String state) {
+                switch (state){
+                    case "Edit":
+                        updateData(documentSnapshot, position);
+                        break;
+                    case "Delete":
+                        showAlertDialogConfirmDelete(documentSnapshot, position);
+                        break;
+
+                }
+            }
+        });
 
     }
 }
